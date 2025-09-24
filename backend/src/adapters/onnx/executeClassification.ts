@@ -33,7 +33,9 @@ export const executeClassification = async (
   // 2. 推論の実行
   //   tf.jsの model.execute({[name]: tensor}) と同様に、
   //   入力名をキーとするオブジェクトでテンソルを渡します。
-  const feeds = { [splitLayerName]: inputTensor };
+  const inputTensorName =
+    splitLayerName === "full_offload" ? session.inputNames[0] : splitLayerName;
+  const feeds = { [inputTensorName]: inputTensor };
   const results = await session.run(feeds);
 
   // バックエンドモデルの出力層の名前を取得（通常は1つ）

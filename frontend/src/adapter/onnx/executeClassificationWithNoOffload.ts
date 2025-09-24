@@ -22,7 +22,7 @@ export const executeClassificationWithNoOffload = async ({
 
   const inputTensor = new ort.Tensor('float32', pixelData, tensorShape);
 
-  const feeds = { image_tensor: inputTensor };
+  const feeds = { [session.inputNames[0]]: inputTensor };
 
   const results = await session.run(feeds);
 
