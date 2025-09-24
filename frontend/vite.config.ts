@@ -16,12 +16,31 @@ export default defineConfig({
           // コピー先のディレクトリ（ビルド後のルートディレクトリ）
           dest: '.',
         },
+        {
+          // 追加：ONNXランタイムの必要なファイルを確実にコピー
+          src: 'node_modules/onnxruntime-web/dist/ort-*.{wasm,mjs,jsep.mjs}',
+          dest: '.',
+        },
       ],
     }),
   ],
-  // 💡 修正点：onnxruntime-webを事前バンドルの対象から除外する
+  // onnxruntime-webを事前バンドルの対象から除外する
   optimizeDeps: {
     exclude: ['onnxruntime-web', 'rollup'],
+  },
+  build: {
+    // 静的ファイルのコピーを確実に行うための設定
+    assetsInlineLimit: 0,
+    rollupOptions: {
+      output: {
+        // onnxruntime-webのファイルを適切に処理
+        manualChunks: (id) => {
+          if (id.includes('onnxruntime-web')) {
+            return 'onnxruntime-web';
+          }
+        },
+      },
+    },
   },
   server: {
     headers: {
@@ -29,5 +48,12 @@ export default defineConfig({
       'Cross-Origin-Embedder-Policy': 'require-corp',
     },
     allowedHosts: ['webapp', 'localhost', '127.0.0.1'],
+    // 開発サーバーでのMIMEタイプ設定
+    middlewareMode: false,
+  },
+  // 本番環境での追加設定
+  define: {
+    // ONNXランタイムのパスを明示的に設定
+    'process.env.ONNXRUNTIME_WEB_PATH': JSON.stringify('/'),
   },
 });
