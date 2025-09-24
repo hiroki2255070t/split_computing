@@ -1,5 +1,6 @@
 import * as ort from 'onnxruntime-web';
 import type { ExecuteClassificationWithPartialOffloadResult } from '../classificationExecutor';
+import { showOnnxTensorInfo } from './logger';
 
 /**
  * onnxruntime-web を使用して、デバイス上でモデルの一部を推論（オフロード）します。
@@ -23,6 +24,7 @@ export const executeClassificationWithPartialOffload = async ({
   const t0 = performance.now();
 
   const inputTensor = new ort.Tensor('float32', pixelData, tensorShape);
+  showOnnxTensorInfo({ tensor: inputTensor, tensorName: 'inputTensor' });
 
   // onnxruntime-webでは、session.run()の第2引数で出力ノードを指定できる。
   // これにより、モデルの途中にあるレイヤーから中間特徴量を直接取り出すことが可能。
@@ -33,6 +35,7 @@ export const executeClassificationWithPartialOffload = async ({
 
   const results = await session.run(feeds, fetches);
   const middleTensor = results[splitLayerName];
+  showOnnxTensorInfo({ tensor: middleTensor, tensorName: 'middleTensor' });
   const middleTensorShape = Array.from(middleTensor.dims);
   const middleTensorData = middleTensor.data as Float32Array;
 

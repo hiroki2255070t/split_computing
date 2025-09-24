@@ -6,7 +6,7 @@ import { useTabSelector } from '../hooks/useTabSelector';
 import { useSplitLayerName } from '../hooks/useSplitLayerName';
 import { useLogData } from '../hooks/useLogData';
 import { useExecutorContext } from '../contexts/executorContext';
-import { modelMetadata } from '../data/models/efficientNetV2_S/metadata';
+import { modelMetadata } from '../data/models/efficientNetV2_S/metadataOnnx';
 import TabSelector from './TabSelector';
 import { LogDataDownloader } from './LogDataDownloader';
 import { runClassificationLoop } from '../utils/classification/runClassifiationLoop';

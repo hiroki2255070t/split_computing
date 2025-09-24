@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { modelMetadata } from '../data/models/efficientNetV2_S/metadata';
+import { modelMetadata } from '../data/models/efficientNetV2_S/metadataOnnx';
 
 export const useSplitLayerName = ({ modelName }: { modelName: string }) => {
   if (modelName != modelMetadata.modelName) {

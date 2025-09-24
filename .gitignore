@@ -51,5 +51,4 @@ frontend/coverage/
 
 # Backend specific
 backend/uploads/
-backend/models/
 EOF

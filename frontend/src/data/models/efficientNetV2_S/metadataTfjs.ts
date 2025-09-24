@@ -1,12 +1,11 @@
 import type { ModelMetadata } from '../types';
 
 export const modelMetadata: ModelMetadata = {
-  modelName: 'EfficientNetV2-S',
+  modelName: 'EfficientNetV2-S', // 入力画像の形状は[3, 384, 384], データサイズは1769472bytes
   splitLayers: [
     {
-      // splitLayerName:
-      //   'StatefulPartitionedCall/efficientnetv2-s/blocks_6/tpu_batch_normalization_1/FusedBatchNormV3',
-      splitLayerName: '/net/features/5/6/Add_output_0',
+      splitLayerName:
+        'StatefulPartitionedCall/efficientnetv2-s/blocks_6/tpu_batch_normalization_1/FusedBatchNormV3',
       splitLayerNameAbbreviation: 'block_6',
       featuresBytes: 589824, // [48, 48, 64]
       compressionRatio: 589824 / 1769472,
