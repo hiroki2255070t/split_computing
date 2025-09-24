@@ -1,0 +1,73 @@
+version: '3.8'
+services:
+  selenium:
+    build:
+      context: ./browser
+      dockerfile: Dockerfile.browser
+    container_name: selenium
+    ports:
+      - "4444:4444"
+      - "5900:5900"
+      - "7900:7900"
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./browser/browser_script.py:/app/browser_script.py
+    networks:
+      custom-net:
+        ipv4_address: 172.20.0.2
+    depends_on:
+      - websocket-server
+      - webapp
+
+  websocket-server:
+    build:
+      context: ./image_classification_backend
+      dockerfile: Dockerfile.cpu
+    container_name: websocket-server
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=8080
+      - ORT_LOG_SEVERITY_LEVEL=3
+      - BACKEND_LIBRARY=onnx
+      - MODEL_PATH_TFJS=/app/models/tfjs/efficientnetV2_S/model.json
+      - MODEL_PATH_ONNX=/app/models/onnx/efficientnetV2_S_tail.onnx
+    volumes:
+      - ./image_classification_backend/models:/app/models:ro
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+    cap_add:
+      - NET_ADMIN
+    networks:
+      custom-net:
+        ipv4_address: 172.20.0.3
+
+  webapp:
+    build:
+      context: ./image_classification
+      dockerfile: Dockerfile.app
+      target: ${BUILD_TARGET:-development}  # デフォルトはdevelopment
+      platforms: 
+        - linux/arm64
+    container_name: webapp
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./image_classification:/app  # 開発用にホストのソースをマウント
+      - /app/node_modules 
+    networks:
+      custom-net:
+        ipv4_address: 172.20.0.4
+
+networks:
+  custom-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

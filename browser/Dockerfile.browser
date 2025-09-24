@@ -1,0 +1,9 @@
+FROM selenium/standalone-chromium:latest
+USER root
+RUN apt-get update && apt-get install -y python3 python3-pip
+RUN pip3 install selenium
+# browser_script.pyをコピー
+COPY browser_script.py /app/browser_script.py
+RUN chmod +x /app/browser_script.py  # 実行権限を付与（必要に応じて）
+USER seluser
+WORKDIR /app  # 作業ディレクトリを/appに設定
