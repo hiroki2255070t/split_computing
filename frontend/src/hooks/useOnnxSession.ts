@@ -3,16 +3,17 @@ import * as ort from 'onnxruntime-web';
 
 // 環境に応じてwasmPathsを設定
 if (import.meta.env.PROD) {
-  // 本番環境（Firebase Hosting）
+  // 本番環境（Firebase Hosting）- 文字列でパスを指定
   ort.env.wasm.wasmPaths = '/';
+  // onnxruntime-webのバージョンによってはこちらの設定が必要
+  ort.env.wasm.numThreads = 1; // マルチスレッドを無効化してCORSエラー回避
+  ort.env.wasm.simd = true;
 } else {
   // 開発環境
   ort.env.wasm.wasmPaths = './';
+  ort.env.wasm.numThreads = 4;
+  ort.env.wasm.simd = true;
 }
-
-// WebAssemblyの設定を最適化
-ort.env.wasm.numThreads = 4;
-ort.env.wasm.simd = true;
 
 /**
  * @param modelPath : '/model/<MODEL_NAME>/<MODEL_NAME>.onnx'
@@ -29,6 +30,22 @@ export const useOnnxSession = (modelPath: string) => {
       try {
         setStatus('Initializing ONNX Runtime...');
 
+        // モデルファイルが存在するか事前確認
+        try {
+          const response = await fetch(modelPath, { method: 'HEAD' });
+          console.log('Model file check:', {
+            url: modelPath,
+            status: response.status,
+            headers: Object.fromEntries(response.headers.entries()),
+          });
+          if (!response.ok) {
+            throw new Error(`Model file not accessible: ${response.status}`);
+          }
+        } catch (fetchError) {
+          console.error('Model file fetch error:', fetchError);
+          throw new Error(`Cannot access model file: ${modelPath}`);
+        }
+
         // セッションオプションを明示的に設定
         const sessionOptions: ort.InferenceSession.SessionOptions = {
           executionProviders: [
@@ -43,6 +60,10 @@ export const useOnnxSession = (modelPath: string) => {
         };
 
         setStatus('Creating inference session...');
+        console.log('Attempting to create session with options:', sessionOptions);
+        console.log('Model path:', modelPath);
+        console.log('WASM paths:', ort.env.wasm.wasmPaths);
+
         const loadedSession = await ort.InferenceSession.create(modelPath, sessionOptions);
 
         setSession(loadedSession);
@@ -60,6 +81,16 @@ export const useOnnxSession = (modelPath: string) => {
         let errorMessage = 'Failed to load onnx session.';
         if (error instanceof Error) {
           errorMessage += ` Error: ${error.message}`;
+
+          // CORS関連のエラーかチェック
+          if (
+            error.message.includes('CORS') ||
+            error.message.includes('Cross-Origin') ||
+            error.message.includes('NetworkError') ||
+            error.message.includes('Failed to fetch')
+          ) {
+            errorMessage += ' This appears to be a CORS issue.';
+          }
         }
 
         setLoading(false);
@@ -70,6 +101,7 @@ export const useOnnxSession = (modelPath: string) => {
           wasmPaths: ort.env.wasm.wasmPaths,
           modelPath,
           userAgent: navigator.userAgent,
+          currentURL: window.location.href,
           error: error,
         });
       }

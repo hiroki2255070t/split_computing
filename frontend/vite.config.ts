@@ -11,8 +11,8 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          // onnxruntime-webの配布ファイルがある場所
-          src: 'node_modules/onnxruntime-web/dist/*.{wasm,jsep.mjs}',
+          // onnxruntime-webの配布ファイルがある場所（jsep.wasmも含める）
+          src: 'node_modules/onnxruntime-web/dist/*.{wasm,jsep.mjs,jsep.wasm,mjs}',
           // コピー先のディレクトリ（ビルド後のルートディレクトリ）
           dest: '.',
         },

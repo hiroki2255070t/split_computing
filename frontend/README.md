@@ -52,3 +52,8 @@
 - **機械学習**: TensorFlow.js, onnxruntime-web
 - **スタイリング**: Tailwind CSS
 - **型定義・バリデーション**: Zod
+
+## firebase
+firebaseにhostingする。
+1. npm run build
+2. firebase deploy --only hosting
