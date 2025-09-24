@@ -26,6 +26,11 @@ export default defineConfig({
           src: 'node_modules/onnxruntime-web/dist/*.js',
           dest: '.',
         },
+        {
+          // モデルファイルをpublic/modelからコピー（パスは実際の場所に合わせて調整）
+          src: 'public/model/**/*',
+          dest: 'model',
+        },
       ],
     }),
   ],
