@@ -49,6 +49,6 @@
 ## 使用技術
 
 - **フロントエンド**: React, Vite, TypeScript
-- **機械学習**: TensorFlow.js
+- **機械学習**: TensorFlow.js, onnxruntime-web
 - **スタイリング**: Tailwind CSS
 - **型定義・バリデーション**: Zod
