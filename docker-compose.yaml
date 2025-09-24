@@ -25,16 +25,12 @@ services:
       context: ./backend
       dockerfile: Dockerfile.cpu
     container_name: websocket-server
+    env_file:
+    - ./backend/.env
     ports:
       - "8080:8080"
     environment:
       - NODE_ENV=production
-      - HOST=0.0.0.0
-      - PORT=8080
-      - ORT_LOG_SEVERITY_LEVEL=3
-      - BACKEND_LIBRARY=onnx
-      - MODEL_PATH_TFJS=/app/models/tfjs/efficientnetV2_S/model.json
-      - MODEL_PATH_ONNX=/app/models/onnx/efficientnetV2_S_tail.onnx
     volumes:
       - ./backend/models:/app/models:ro
     healthcheck:

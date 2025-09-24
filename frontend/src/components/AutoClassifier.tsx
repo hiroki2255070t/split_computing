@@ -12,7 +12,7 @@ import { modelMetadata } from '../data/models/efficientNetV2_S/metadataOnnx';
 const AutoClassifier: React.FC = () => {
   const { executor, loading: modelLoading } = useExecutorContext();
 
-  const { pushLogDataElement, showLogDataElement } = useLogData();
+  const { logData, pushLogDataElement, showLogDataElement, saveLogDataAsJson } = useLogData();
 
   const intervalMs = useMemo(() => 1000, []);
 
@@ -53,6 +53,7 @@ const AutoClassifier: React.FC = () => {
         serverMessageReceivedTimestamp: clientExecutionFinishTimestamp, // リモートでは実行されないため恣意的な値を利用
         serverResponseSentTimestamp: clientExecutionFinishTimestamp, // リモートでは実行されないため恣意的な値を利用
       };
+      console.dir({ newLogDataElement });
       pushLogDataElement(newLogDataElement);
       showLogDataElement(newLogDataElement);
     },
@@ -75,10 +76,13 @@ const AutoClassifier: React.FC = () => {
         offloadTask,
         callbackOnNoOffload
       );
+      if (logData.length === 10) {
+        saveLogDataAsJson('logdata');
+      }
     };
 
     intervalIdRef.current = window.setInterval(tick, intervalMs);
-  }, [executor, intervalMs, offloadTask, callbackOnNoOffload]);
+  }, [executor, intervalMs, logData, offloadTask, callbackOnNoOffload, saveLogDataAsJson]);
 
   // Start/Cleanup loop when ready
   useEffect(() => {
@@ -92,7 +96,12 @@ const AutoClassifier: React.FC = () => {
     };
   }, [executor, modelLoading, startLoop]);
 
-  return <p>You are genius!</p>;
+  return (
+    <>
+      <p>You are genius!</p>
+      <p>{logData.length !== 0 ? logData[0].inferenceTimeOnDevice : 0} </p>
+    </>
+  );
 };
 
 export default AutoClassifier;

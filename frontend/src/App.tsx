@@ -1,11 +1,11 @@
 import React from 'react';
 import { ExecutorProvider } from './contexts/ExecutorProvider';
-import RealTimeClassifier from './components/RealTimeClassifier';
+import AutoClassifier from './components/AutoClassifier';
 
 const App: React.FC = () => {
   return (
     <ExecutorProvider>
-      <RealTimeClassifier />
+      <AutoClassifier />
     </ExecutorProvider>
   );
 };

@@ -3,7 +3,6 @@ import { z } from 'zod';
 const ConfigSchema = z.object({
   MODEL_FILE_PATH: z.string(),
   BACKEND_LIBRARY: z.union([z.literal('tfjs'), z.literal('onnx')]),
-  INPUT_LAYER_NAME: z.string(),
   SPLIT_LAYER_NAME: z.string(),
   INPUT_IMAGE_SIZE_EFFICIENT_NET_V2_B0: z.coerce.number(),
   INPUT_IMAGE_SIZE_EFFICIENT_NET_V2_S: z.coerce.number(),
@@ -21,7 +20,6 @@ const getEnv = (): ConfigType => {
     const env = {
       MODEL_FILE_PATH: import.meta.env.VITE_MODEL_FILE_PATH,
       BACKEND_LIBRARY: import.meta.env.VITE_BACKEND_LIBRARY,
-      INPUT_LAYER_NAME: import.meta.env.VITE_INPUT_LAYER_NAME,
       SPLIT_LAYER_NAME: import.meta.env.VITE_SPLIT_LAYER_NAME,
       INPUT_IMAGE_SIZE_EFFICIENT_NET_V2_B0: import.meta.env
         .VITE_INPUT_IMAGE_SIZE_EFFICIENT_NET_V2_B0,

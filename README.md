@@ -15,7 +15,8 @@ https://image-classification-33f92.web.app/
 ```
 docker exec selenium python3 /app/browser_script.py
 ```
-http://localhost:7900 からアプリのuiを見ることができる
+http://localhost:7900 からアプリのuiを見ることができる。
+パスワードはsecret
 
 ## netronを用いたモデルの可視化
 https://netron.app/ で使用するモデルの.onnxファイルをアップロードすると、モデルを可視化することができる。
