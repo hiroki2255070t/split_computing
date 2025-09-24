@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es6" /* コンパイル後のECMAScriptバージョン */,
+    "module": "commonjs" /* モジュールシステム */,
+    "rootDir": "./src" /* TypeScriptファイルのルートディレクトリ */,
+    "outDir": "./dist" /* コンパイル後のJavaScriptファイルの出力先 */,
+    "strict": true /* 厳格な型チェックを有効化 */,
+    "esModuleInterop": true /* ESモジュールとの相互運用性を有効化 */,
+    "skipLibCheck": true /* ライブラリの型チェックをスキップ */,
+    "forceConsistentCasingInFileNames": true /* ファイル名の大文字小文字を区別 */
+  },
+  "include": ["src/**/*"] // コンパイル対象のファイル
+}
