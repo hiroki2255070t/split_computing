@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.cpu
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=8080
+      # onnxruntime のログ（0:verbose, 3:warning）
+      - ORT_LOG_SEVERITY_LEVEL=3
+      - BACKEND_LIBRARY=onnx
+      - MODEL_PATH_TFJS=/app/models/tfjs/efficientnetV2_S/model.json
+      - MODEL_PATH_ONNX=/app/models/onnx/efficientnetV2_S_tail.onnx
+      
+    volumes:
+      - ./models:/app/models:ro
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
