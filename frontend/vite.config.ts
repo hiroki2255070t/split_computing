@@ -21,6 +21,11 @@ export default defineConfig({
           src: 'node_modules/onnxruntime-web/dist/ort-*.{wasm,mjs,jsep.mjs}',
           dest: '.',
         },
+        {
+          // onnxランタイムのワーカーファイルもコピー
+          src: 'node_modules/onnxruntime-web/dist/*.js',
+          dest: '.',
+        },
       ],
     }),
   ],
