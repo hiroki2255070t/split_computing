@@ -15,7 +15,9 @@
     "test:backend": "cd backend && npm run test",
     "install:all": "npm install && npm run install:frontend && npm run install:backend",
     "install:frontend": "cd frontend && npm install",
-    "install:backend": "cd backend && npm install"
+    "install:backend": "cd backend && npm install",
+    "deploy:frontend": "cd frontend && npm run build && firebase deploy",
+    "deploy:preview": "cd frontend && npm run build && firebase hosting:channel:deploy preview"
   },
   "devDependencies": {
     "concurrently": "^8.2.0"
